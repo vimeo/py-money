@@ -2,6 +2,10 @@
 py-money
 ========
 
+.. image:: https://badge.fury.io/py/py-money.svg
+    :target: https://badge.fury.io/py/py-money
+    :alt: Latest PyPI version
+
 Money class for Python 3. Unlike other Python money classes, this class enforces that all monetary amounts are represented with the correct number of decimal places for the currency. For example, 3.678 USD is invalid, as is 5.5 JPY.
 
 Installation
