@@ -27,7 +27,6 @@ setup(
     ],
     keywords='money currency',
     install_requires=[
-        'pytest==3.0.6',
         'babel==2.4.0'
     ],
 )

@@ -111,7 +111,13 @@ Support may be added one day for setting rounding modes. Foreign exchange rates 
 
 Contributing
 ============
-Pull requests are welcome! Please include tests. You can run the tests from the root directory with
+Pull requests are welcome! Please include tests. You can install everything needed for development with
+
+::
+
+   make install
+
+You can then run the tests from the root directory with
 
 ::
 
