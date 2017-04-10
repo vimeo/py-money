@@ -1,5 +1,6 @@
 """Class representing a monetary amount"""
 
+from typing import Union
 from decimal import Decimal, ROUND_HALF_UP
 from babel.numbers import format_currency
 from money.currency import Currency
@@ -108,32 +109,44 @@ class Money:
     def __div__(self, other: float) -> 'Money':
         return self.__truediv__(other)
 
-    def __truediv__(self, other: float) -> 'Money':
+    def __truediv__(self, other: Union['Money', float]) -> Union['Money', float]:
         if isinstance(other, Money):
-            raise InvalidOperandError
-        elif other == 0:
-            raise ZeroDivisionError
+            self._assert_same_currency(other)
+            if other.amount == Decimal('0'):
+                raise ZeroDivisionError
+            return float(self.amount / other.amount)
 
-        amount = self._round(self._amount / Decimal(other), self._currency)
-        return self.__class__(str(amount), self._currency)
+        else:
+            if other == 0:
+                raise ZeroDivisionError
+            amount = self._round(self._amount / Decimal(other), self._currency)
+            return self.__class__(str(amount), self._currency)
 
-    def __floordiv__(self, other: float) -> 'Money':
+    def __floordiv__(self, other: Union['Money', float]) -> Union['Money', float]:
         if isinstance(other, Money):
-            raise InvalidOperandError
-        elif other == 0:
-            raise ZeroDivisionError
+            self._assert_same_currency(other)
+            if other.amount == Decimal('0'):
+                raise ZeroDivisionError
+            return float(self.amount // other.amount)
 
-        amount = self._round(self._amount // Decimal(other), self._currency)
-        return self.__class__(str(amount), self._currency)
+        else:
+            if other == 0:
+                raise ZeroDivisionError
+            amount = self._round(self._amount // Decimal(other), self._currency)
+            return self.__class__(str(amount), self._currency)
 
-    def __mod__(self, other: int) -> 'Money':
+    def __mod__(self, other: Union['Money', float]) -> Union['Money', float]:
         if isinstance(other, Money):
-            raise InvalidOperandError
-        elif other == 0:
-            raise ZeroDivisionError
+            self._assert_same_currency(other)
+            if other.amount == Decimal('0'):
+                raise ZeroDivisionError
+            return float(self.amount % other.amount)
 
-        amount = self._round(self._amount % Decimal(other), self._currency)
-        return self.__class__(str(amount), self._currency)
+        else:
+            if other == 0:
+                raise ZeroDivisionError
+            amount = self._round(self._amount % Decimal(other), self._currency)
+            return self.__class__(str(amount), self._currency)
 
     def __neg__(self) -> 'Money':
         return self.__class__(str(-self._amount), self._currency)

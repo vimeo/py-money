@@ -160,9 +160,7 @@ class TestMoney:
         assert Money('3.3') / 3 == Money('1.1')
         assert Money('9.95') / 0.24 == Money('41.46')
         assert Money('3', Currency.JPY) / 1.6 == Money('2', Currency.JPY)
-
-        with pytest.raises(InvalidOperandError):
-            Money('5.5') / Money('1.2')
+        assert Money('3.6') / Money('2.5') == 1.44
 
         with pytest.raises(TypeError):
             3 / Money('5.5')
@@ -173,32 +171,49 @@ class TestMoney:
         with pytest.raises(ZeroDivisionError):
             Money('3.3') / 0.0
 
+        with pytest.raises(ZeroDivisionError):
+            Money('3.3') / Money('0')
+
+        with pytest.raises(CurrencyMismatchError):
+            Money('3.5', Currency.EUR) / Money('1.8', Currency.GBP)
+
     def test_floor_divide(self):
         assert Money('3.3') // 3 == Money('1')
         assert Money('9.95') // 0.24 == Money('41')
         assert Money('3', Currency.JPY) // 1.6 == Money('1', Currency.JPY)
-
-        with pytest.raises(InvalidOperandError):
-            Money('5.5') // Money('1.2')
+        assert Money('3.6') // Money('2.5') == 1
 
         with pytest.raises(TypeError):
             3 // Money('5.5')
 
         with pytest.raises(ZeroDivisionError):
+            Money('3') // 0
+
+        with pytest.raises(ZeroDivisionError):
             Money('3.3') // 0.0
+
+        with pytest.raises(ZeroDivisionError):
+            Money('3.3') // Money('0')
+
+        with pytest.raises(CurrencyMismatchError):
+            Money('3.5', Currency.EUR) // Money('1.8', Currency.GBP)
 
     def test_mod(self):
         assert Money('3.3') % 3 == Money('0.3')
         assert Money('3', Currency.JPY) % 2 == Money('1', Currency.JPY)
-
-        with pytest.raises(InvalidOperandError):
-            Money('5.5') % Money('1.2')
+        assert Money('3') % Money('2') == 1
 
         with pytest.raises(TypeError):
             3 % Money('5.5')
 
         with pytest.raises(ZeroDivisionError):
             Money('3.3') % 0
+
+        with pytest.raises(ZeroDivisionError):
+            Money('3.3') % 0.0
+
+        with pytest.raises(CurrencyMismatchError):
+            Money('3.5', Currency.EUR) % Money('1.8', Currency.GBP)
 
     def test_neg(self):
         assert -Money('5.23') == Money('-5.23')
