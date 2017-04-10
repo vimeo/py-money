@@ -168,7 +168,10 @@ class TestMoney:
             3 / Money('5.5')
 
         with pytest.raises(ZeroDivisionError):
-            Money('3.3') / 0
+            Money('3') / 0
+
+        with pytest.raises(ZeroDivisionError):
+            Money('3.3') / 0.0
 
     def test_floor_divide(self):
         assert Money('3.3') // 3 == Money('1')
@@ -182,7 +185,7 @@ class TestMoney:
             3 // Money('5.5')
 
         with pytest.raises(ZeroDivisionError):
-            Money('3.3') // 0
+            Money('3.3') // 0.0
 
     def test_mod(self):
         assert Money('3.3') % 3 == Money('0.3')
