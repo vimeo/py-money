@@ -1,11 +1,12 @@
 """Class representing a monetary amount"""
 
 from typing import Union
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
 from babel.numbers import format_currency
 from money.currency import Currency
 from money.currency import CurrencyHelper
 from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
+from money.config import MONEY_CONFIG
 
 class Money:
     """Class representing a monetary amount"""
@@ -168,11 +169,15 @@ class Money:
 
     @staticmethod
     def _round(amount: Decimal, currency: Currency) -> Decimal:
+        if not MONEY_CONFIG['rounding_per_operation']:
+            return amount
+
+        rounding = MONEY_CONFIG['rounding_type']
         sub_units = CurrencyHelper.sub_unit_for_currency(currency)
         # rstrip is necessary because quantize treats 1. differently from 1.0
         rounded_to_subunits = amount.quantize(Decimal(str(1 / sub_units).rstrip('0')),\
-                                              rounding=ROUND_HALF_UP)
+                                              rounding=rounding)
         decimal_precision = CurrencyHelper.decimal_precision_for_currency(currency)
         return rounded_to_subunits.quantize(\
                    Decimal(str(1 / (10 ** decimal_precision)).rstrip('0')),\
-                   rounding=ROUND_HALF_UP)
+                   rounding=rounding)
