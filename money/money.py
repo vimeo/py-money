@@ -10,7 +10,7 @@ from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidO
 class Money:
     """Class representing a monetary amount"""
 
-    def __init__(self, amount: str, currency: Currency=Currency.USD) -> None:
+    def __init__(self, amount: str, currency: Currency = Currency.USD) -> None:
         self._amount = Decimal(amount)
         self._currency = currency
 
@@ -157,7 +157,7 @@ class Money:
     def __abs__(self) -> 'Money':
         return self.__class__(str(abs(self._amount)), self._currency)
 
-    def format(self, locale: str='en_US') -> str:
+    def format(self, locale: str = 'en_US') -> str:
         """Returns a string of the currency formatted for the specified locale"""
 
         return format_currency(self.amount, self.currency.name, locale=locale)
