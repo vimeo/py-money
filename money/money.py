@@ -2,14 +2,36 @@
 
 from typing import Union
 from decimal import Decimal
+from decimal import ROUND_CEILING
+from decimal import ROUND_DOWN
+from decimal import ROUND_FLOOR
+from decimal import ROUND_HALF_DOWN
+from decimal import ROUND_HALF_EVEN
+from decimal import ROUND_HALF_UP
+from decimal import ROUND_UP
+from decimal import ROUND_05UP
 from babel.numbers import format_currency
 from money.currency import Currency
 from money.currency import CurrencyHelper
 from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
-from money.config import MONEY_CONFIG
+
+# pylint: disable=invalid-name
+DecimalRoundingType = Union[
+    ROUND_CEILING,
+    ROUND_DOWN,
+    ROUND_FLOOR,
+    ROUND_HALF_DOWN,
+    ROUND_HALF_EVEN,
+    ROUND_HALF_UP,
+    ROUND_UP,
+    ROUND_05UP,
+]
 
 class Money:
     """Class representing a monetary amount"""
+
+    rounding_per_operation = True
+    rounding_type = ROUND_HALF_UP
 
     def __init__(self, amount: str, currency: Currency = Currency.USD) -> None:
         self._amount = Decimal(amount)
@@ -169,15 +191,38 @@ class Money:
 
     @staticmethod
     def _round(amount: Decimal, currency: Currency) -> Decimal:
-        if not MONEY_CONFIG['rounding_per_operation']:
+        rounding_per_operation = Money.rounding_per_operation
+
+        if not rounding_per_operation:
             return amount
 
-        rounding = MONEY_CONFIG['rounding_type']
+        rounding_type = Money.rounding_type
+
         sub_units = CurrencyHelper.sub_unit_for_currency(currency)
         # rstrip is necessary because quantize treats 1. differently from 1.0
         rounded_to_subunits = amount.quantize(Decimal(str(1 / sub_units).rstrip('0')),\
-                                              rounding=rounding)
+                                              rounding=rounding_type)
         decimal_precision = CurrencyHelper.decimal_precision_for_currency(currency)
         return rounded_to_subunits.quantize(\
                    Decimal(str(1 / (10 ** decimal_precision)).rstrip('0')),\
-                   rounding=rounding)
+                   rounding=rounding_type)
+
+    @classmethod
+    def set_rounding_per_operation(cls, value: bool) -> None:
+        """Set the whether to apply rounding after certain operations class-wide"""
+
+        if value is not True and value is not False:
+            raise TypeError
+
+        Money.rounding_per_operation = value
+
+    @classmethod
+    def set_rounding_type(cls, value: DecimalRoundingType) -> None:
+        """If ``rounding_per_operation`` is set, this determines the rounding method to use"""
+
+        if value not in [ROUND_CEILING, ROUND_DOWN, ROUND_FLOOR,
+                         ROUND_HALF_DOWN, ROUND_HALF_EVEN, ROUND_HALF_UP,
+                         ROUND_UP, ROUND_05UP,]:
+            raise TypeError
+
+        Money.rounding_type = value

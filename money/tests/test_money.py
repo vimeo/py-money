@@ -1,19 +1,11 @@
 """Money tests"""
 
 from decimal import Decimal
-from decimal import ROUND_CEILING
-from decimal import ROUND_DOWN
-from decimal import ROUND_FLOOR
-from decimal import ROUND_HALF_DOWN
-from decimal import ROUND_HALF_EVEN
-from decimal import ROUND_HALF_UP
-from decimal import ROUND_UP
-from decimal import ROUND_05UP
+from decimal import ROUND_05UP, ROUND_HALF_UP
 import pytest
 from money.money import Money
 from money.currency import Currency
 from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
-from money.config import MONEY_CONFIG
 
 # pylint: disable=unneeded-not,expression-not-assigned,no-self-use,missing-docstring
 # pylint: disable=misplaced-comparison-constant,singleton-comparison
@@ -242,17 +234,28 @@ class TestMoney:
         assert Money('10', Currency.JPY).format() == '¥10'
         assert Money('94', Currency.JPY).format('ja_JP') == '￥94'
 
-    def test_config(self):
-        assert (MONEY_CONFIG['rounding_per_operation'] == True or
-                MONEY_CONFIG['rounding_per_operation'] == False)
+    def test_rounding_per_operation(self):
+        assert Money.rounding_per_operation is True
 
-        assert MONEY_CONFIG['rounding_type'] in [
-            ROUND_CEILING,
-            ROUND_DOWN,
-            ROUND_FLOOR,
-            ROUND_HALF_DOWN,
-            ROUND_HALF_EVEN,
-            ROUND_HALF_UP,
-            ROUND_UP,
-            ROUND_05UP
-        ]
+        instance = Money('1.00')
+
+        Money.set_rounding_per_operation(False)
+
+        assert Money.rounding_per_operation is False
+        assert instance.rounding_per_operation is False
+
+        with pytest.raises(TypeError):
+            Money.set_rounding_per_operation('abcd')
+
+    def test_rounding_type(self):
+        assert Money.rounding_type == ROUND_HALF_UP
+
+        instance = Money('1.00')
+
+        Money.set_rounding_type(ROUND_05UP)
+
+        assert Money.rounding_type == ROUND_05UP
+        assert instance.rounding_type == ROUND_05UP
+
+        with pytest.raises(TypeError):
+            Money.set_rounding_type('abcd')
