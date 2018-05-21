@@ -53,6 +53,8 @@ Money will automatically round to the correct number of decimal places for the c
     >>> m / 3
     JPY 3
 
+This is entirely configurable and can be disabled by updating the ``config.py`` file, setting ``rounding_per_operation`` to ``False``.
+
 Money can be formatted for different locales.
 
 .. code:: python
