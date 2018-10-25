@@ -30,6 +30,16 @@ A Money object can be created with an amount (specified as a string) and a curre
     >>> m
     GBP 9.95
 
+Money objects can also be created from and converted to sub units.
+
+.. code:: python
+
+    >>> m = Money.from_sub_units(499, Currency.USD)
+    >>> m
+    USD 4.99
+    >>> m.sub_units
+    499
+
 Money is immutable and supports most mathematical and logical operators.
 
 .. code:: python
