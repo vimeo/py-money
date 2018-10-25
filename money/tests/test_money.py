@@ -7,7 +7,7 @@ from money.currency import Currency
 from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
 
 # pylint: disable=unneeded-not,expression-not-assigned,no-self-use,missing-docstring
-# pylint: disable=misplaced-comparison-constant,singleton-comparison
+# pylint: disable=misplaced-comparison-constant,singleton-comparison,too-many-public-methods
 
 class TestMoney:
     """Money tests"""
