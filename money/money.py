@@ -29,6 +29,18 @@ class Money:
 
         return self._currency
 
+    @classmethod
+    def from_sub_units(cls, sub_units: int, currency: Currency=Currency.USD):
+        """Creates a Money instance from sub-units."""
+        sub_units_per_unit = CurrencyHelper.sub_unit_for_currency(currency)
+        return cls(Decimal(sub_units) / Decimal(sub_units_per_unit), currency)
+
+    @property
+    def sub_units(self) -> int:
+        """Converts the amount to sub-units"""
+        sub_units_per_unit = CurrencyHelper.sub_unit_for_currency(self.currency)
+        return int(self._round(self.amount, self.currency) * sub_units_per_unit)
+
     def __hash__(self) -> str:
         return hash((self._amount, self._currency))
 

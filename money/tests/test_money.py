@@ -36,6 +36,17 @@ class TestMoney:
             # nonfractional currency
             Money('10.2', Currency.KRW)
 
+    def test_from_sub_units(self):
+        money = Money.from_sub_units(101, Currency.USD)
+        assert money == Money('1.01', Currency.USD)
+
+        money = Money.from_sub_units(5, Currency.JPY)
+        assert money == Money('5', Currency.JPY)
+
+    def test_sub_units(self):
+        money = Money('1.01', Currency.USD)
+        assert money.sub_units == 101
+
     def test_hash(self):
         assert hash(Money('1.2')) == hash(Money('1.2', Currency.USD))
         assert hash(Money('1.5')) != hash(Money('9.3'))
