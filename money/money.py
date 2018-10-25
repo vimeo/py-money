@@ -39,7 +39,7 @@ class Money:
     def sub_units(self) -> int:
         """Converts the amount to sub-units"""
         sub_units_per_unit = CurrencyHelper.sub_unit_for_currency(self.currency)
-        return int(self._round(self.amount, self.currency) * sub_units_per_unit)
+        return int(self.amount * sub_units_per_unit)
 
     def __hash__(self) -> str:
         return hash((self._amount, self._currency))
