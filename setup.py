@@ -12,7 +12,7 @@ setup(
     packages=[
         'money'
     ],
-    version='0.2.0',
+    version='0.3.0',
     description='Money module for python',
     long_description=long_description,
     url='https://github.com/vimeo/py-money',
