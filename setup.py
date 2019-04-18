@@ -12,7 +12,7 @@ setup(
     packages=[
         'money'
     ],
-    version='0.3.0',
+    version='0.4.0',
     description='Money module for python',
     long_description=long_description,
     url='https://github.com/vimeo/py-money',
@@ -27,6 +27,6 @@ setup(
     ],
     keywords='money currency',
     install_requires=[
-        'babel==2.4.0'
+        'babel >= 2.4.0, < 3.0'
     ],
 )
