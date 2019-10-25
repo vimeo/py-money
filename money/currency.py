@@ -1281,9 +1281,7 @@ class CurrencyHelper:
         }
     }
     """Data about currencies.
-
     Taken from https://github.com/sebastianbergmann/money
-
     """
 
     @classmethod
@@ -1296,6 +1294,5 @@ class CurrencyHelper:
     def sub_unit_for_currency(cls, currency: Currency) -> int:
         """Returns the sub unit for a currency.
         (eg, the subunit for USD is 100 because there are 100 cents in a dollar)
-
         """
         return cls._CURRENCY_DATA[currency]['sub_unit']
