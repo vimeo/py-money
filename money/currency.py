@@ -389,7 +389,7 @@ class CurrencyHelper:
             'display_name': 'Chilean Peso',
             'numeric_code': 152,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.CNY: {
             'display_name': 'Yuan Renminbi',
@@ -401,7 +401,7 @@ class CurrencyHelper:
             'display_name': 'Colombian Peso',
             'numeric_code': 170,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.COU: {
             'display_name': 'Unidad de Valor Real',
@@ -413,7 +413,7 @@ class CurrencyHelper:
             'display_name': 'Costa Rican Colon',
             'numeric_code': 188,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.CUC: {
             'display_name': 'Peso Convertible',
@@ -575,13 +575,13 @@ class CurrencyHelper:
             'display_name': 'Forint',
             'numeric_code': 348,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.IDR: {
             'display_name': 'Rupiah',
             'numeric_code': 360,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.ILS: {
             'display_name': 'New Israeli Sheqel',
@@ -611,7 +611,7 @@ class CurrencyHelper:
             'display_name': 'Iceland Krona',
             'numeric_code': 352,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.JMD: {
             'display_name': 'Jamaican Dollar',
@@ -665,7 +665,7 @@ class CurrencyHelper:
             'display_name': 'Won',
             'numeric_code': 410,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.KWD: {
             'display_name': 'Kuwaiti Dinar',
@@ -905,7 +905,7 @@ class CurrencyHelper:
             'display_name': 'Guarani',
             'numeric_code': 600,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.QAR: {
             'display_name': 'Qatari Rial',
@@ -1073,7 +1073,7 @@ class CurrencyHelper:
             'display_name': 'New Taiwan Dollar',
             'numeric_code': 901,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.TZS: {
             'display_name': 'Tanzanian Shilling',
@@ -1139,7 +1139,7 @@ class CurrencyHelper:
             'display_name': 'Dong',
             'numeric_code': 704,
             'default_fraction_digits': 0,
-            'sub_unit': 10,
+            'sub_unit': 1,
         },
         Currency.VUV: {
             'display_name': 'Vatu',
