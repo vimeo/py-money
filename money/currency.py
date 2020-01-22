@@ -32,6 +32,7 @@ class Currency(Enum):
     BTN = 'BTN'
     BWP = 'BWP'
     BYR = 'BYR'
+    BYN = 'BYN'
     BZD = 'BZD'
     CAD = 'CAD'
     CDF = 'CDF'
@@ -338,9 +339,15 @@ class CurrencyHelper:
             'sub_unit': 100,
         },
         Currency.BYR: {
-            'display_name': 'Belarussian Ruble',
+            'display_name': 'Belarusian Ruble',
             'numeric_code': 974,
             'default_fraction_digits': 0,
+            'sub_unit': 1,
+        },
+        Currency.BYN: {
+            'display_name': 'Belarusian Ruble',
+            'numeric_code': 933,
+            'default_fraction_digits': 2,
             'sub_unit': 100,
         },
         Currency.BZD: {
