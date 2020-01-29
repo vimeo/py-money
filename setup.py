@@ -16,8 +16,8 @@ setup(
     description='Money module for python',
     long_description=long_description,
     url='https://github.com/vimeo/py-money',
-    author='Nicky Robinson',
-    author_email='nickr@vimeo.com',
+    author='J.C. Manzo',
+    author_email='jnmanzo@gmail.com',
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
