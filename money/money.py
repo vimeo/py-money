@@ -1,11 +1,12 @@
 """Class representing a monetary amount"""
 
-from typing import Union
+from typing import Union, Any
 from decimal import Decimal, ROUND_HALF_UP
 from babel.numbers import format_currency
 from money.currency import Currency
 from money.currency import CurrencyHelper
 from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
+
 
 class Money:
     """Class representing a monetary amount"""
@@ -75,14 +76,14 @@ class Money:
         self._assert_same_currency(other)
         return self.amount >= other.amount
 
-    def __eq__(self, other: 'Money') -> bool:
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Money):
-            raise InvalidOperandError
+            return False
 
         self._assert_same_currency(other)
         return self.amount == other.amount
 
-    def __ne__(self, other: 'Money') -> bool:
+    def __ne__(self, other: Any) -> bool:
         return not self == other
 
     def __bool__(self):
