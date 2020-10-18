@@ -71,7 +71,7 @@ class Money:
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Money):
-            return False
+            return NotImplemented
 
         self._assert_same_currency(other)
         return self.amount == other.amount
