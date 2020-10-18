@@ -9,6 +9,7 @@ from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidO
 # pylint: disable=unneeded-not,expression-not-assigned,no-self-use,missing-docstring
 # pylint: disable=misplaced-comparison-constant,singleton-comparison,too-many-public-methods
 
+
 class TestMoney:
     """Money tests"""
 
@@ -109,8 +110,8 @@ class TestMoney:
         with pytest.raises(CurrencyMismatchError):
             Money('3.5', Currency.EUR) == Money('3.5', Currency.GBP)
 
-        with pytest.raises(InvalidOperandError):
-            Money('5.5') == 5.5
+        assert not Money('5.5') == 5.5
+        assert Money('5.5', Currency.AED) in (None, 3.3, Money('5.5', Currency.AED))
 
     def test_not_equal(self):
         assert Money('3.5') != Money('46.44')
@@ -120,8 +121,8 @@ class TestMoney:
         with pytest.raises(CurrencyMismatchError):
             Money('3.5', Currency.EUR) != Money('23', Currency.GBP)
 
-        with pytest.raises(InvalidOperandError):
-            Money('5.5') != 666.32
+        assert Money('5.5') != 666.32
+        assert Money('5.4', Currency.USD) not in (None, 3.3, Money('5.5', Currency.USD))
 
     def test_bool(self):
         assert bool(Money('3.62')) == True
