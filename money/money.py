@@ -129,7 +129,6 @@ class Money:
             if other.amount == Decimal("0"):
                 raise ZeroDivisionError
             return float(self.amount / other.amount)
-
         else:
             if other == 0:
                 raise ZeroDivisionError
@@ -142,7 +141,6 @@ class Money:
             if other.amount == Decimal("0"):
                 raise ZeroDivisionError
             return float(self.amount // other.amount)
-
         else:
             if other == 0:
                 raise ZeroDivisionError

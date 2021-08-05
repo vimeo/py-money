@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from babel.numbers import get_currency_symbol
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,pointless-string-statement
 
 """
 Data about currencies.
@@ -1108,11 +1108,16 @@ _CURRENCY_DATA = {
 
 
 class CurrencyBase(Enum):
+    """
+    Base class for `Currency` Enum defining fields and methods for each Enum entry
+    """
+    # pylint: disable=invalid-name
     # defining fields below is useful for type assist
     display_name: str
     numeric_code: int
     default_fraction_digits: int
     sub_unit: int
+    # pylint: enable=invalid-name
 
     def __new__(cls, currency_code: str, currency_dict_value: Dict[str, Any]):
         obj = object.__new__(cls)
