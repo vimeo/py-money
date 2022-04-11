@@ -1146,7 +1146,7 @@ class CurrencyHelper:
             'display_name': 'Dong',
             'numeric_code': 704,
             'default_fraction_digits': 0,
-            'sub_unit': 10,
+            'sub_unit': 1,
         },
         Currency.VUV: {
             'display_name': 'Vatu',
