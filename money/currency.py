@@ -450,7 +450,7 @@ class CurrencyHelper:
             'display_name': 'Djibouti Franc',
             'numeric_code': 262,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.DKK: {
             'display_name': 'Danish Krone',
