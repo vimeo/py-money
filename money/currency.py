@@ -588,7 +588,7 @@ class CurrencyHelper:
             'display_name': 'Rupiah',
             'numeric_code': 360,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.ILS: {
             'display_name': 'New Israeli Sheqel',
