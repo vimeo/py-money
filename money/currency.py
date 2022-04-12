@@ -654,7 +654,7 @@ class CurrencyHelper:
             'display_name': 'Riel',
             'numeric_code': 116,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.KMF: {
             'display_name': 'Comoro Franc',
