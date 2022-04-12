@@ -396,7 +396,7 @@ class CurrencyHelper:
             'display_name': 'Chilean Peso',
             'numeric_code': 152,
             'default_fraction_digits': 0,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.CNY: {
             'display_name': 'Yuan Renminbi',
