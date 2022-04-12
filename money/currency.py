@@ -438,7 +438,7 @@ class CurrencyHelper:
             'display_name': 'Cape Verde Escudo',
             'numeric_code': 132,
             'default_fraction_digits': 2,
-            'sub_unit': 100,
+            'sub_unit': 1,
         },
         Currency.CZK: {
             'display_name': 'Czech Koruna',
