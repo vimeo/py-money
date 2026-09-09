@@ -105,7 +105,7 @@ class Currency(Enum):
     MMK = 'MMK'
     MNT = 'MNT'
     MOP = 'MOP'
-    MRO = 'MRO'
+    MRU = 'MRU'
     MUR = 'MUR'
     MVR = 'MVR'
     MWK = 'MWK'
@@ -782,9 +782,9 @@ class CurrencyHelper:
             'default_fraction_digits': 2,
             'sub_unit': 100,
         },
-        Currency.MRO: {
+        Currency.MRU: {
             'display_name': 'Ouguiya',
-            'numeric_code': 478,
+            'numeric_code': 929,
             'default_fraction_digits': 2,
             'sub_unit': 5,
         },
