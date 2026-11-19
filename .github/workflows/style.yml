@@ -1,0 +1,37 @@
+name: Style
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+      - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+jobs:
+
+  pre-commit:
+    name: Pre-Commit Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.9"
+          python-version: "3.11"
+          enable-cache: true
+
+      - name: Run pre-commit
+        run: uv run pre-commit run --show-diff-on-failure --all-files
+
+  broken-links:
+    name: Broken Links Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Markup Link Checker (mlc)
+        uses: becheran/mlc@b74268b49f87c6aaf6ee8d4c6a48d9250cb95b01 # v2.0.0

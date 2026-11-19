@@ -1,0 +1,46 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+
+  release-please:
+    name: Release PR
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/money-iso
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
+        id: release
+        with:
+          # this is a built-in strategy in release-please, see "Action Inputs"
+          # for more options
+          config-file: .github/release-please-config.json
+          manifest-file: .github/release-please-manifest.json
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: ${{ steps.release.outputs.release_created }}
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.5'
+          python-version: '3.11'
+          enable-cache: true
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Package project
+        run: make build
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
+        if: ${{ steps.release.outputs.release_created }}

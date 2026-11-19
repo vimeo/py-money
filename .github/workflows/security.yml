@@ -1,0 +1,67 @@
+name: Security
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+  static:
+    name: Static Check
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Static program analysis
+        run: semgrep ci --config=p/default
+
+  scan:
+    name: Leaked Secrets Scan
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Secret Scanning
+        uses: trufflesecurity/trufflehog@ffdee00aded8ed6e545aba48ef7956522d3b076e # main
+        with:
+          extra_args: --only-verified
+
+  licenses:
+    name: License Compatibility Check
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Install uv and set the Python version
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: "0.13.9"
+          enable-cache: true
+
+      - name: Check licenses
+        # Allowed: permissive licenses only (Apache-2.0, BSD, MIT, PSF).
+        # pathspec (MPL-2.0, weak copyleft) is explicitly ignored: it is a transitive
+        # dev-only dependency of pre-commit and is never shipped with the library.
+        run: |
+          uv run pip-licenses \
+            --allow-only="MIT;MIT License;BSD License;BSD-2-Clause;Apache Software License;Apache-2.0;Apache-2.0 OR BSD-2-Clause;Python Software Foundation License;PSF-2.0" \
+            --ignore-packages pathspec

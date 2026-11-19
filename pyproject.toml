@@ -1,0 +1,139 @@
+[project]
+name = "money-iso"
+version = "4.0.0"
+description = "A python library to manage money"
+repository = "https://github.com/backmarket-oss/money-iso"
+homepage = "https://github.com/backmarket-oss/money-iso"
+authors = [
+    { name = "Back Market Bureau of Technology" },
+    { name = "J.C. Manzo", email = "jnmanzo@gmail.com" },
+    { name= "Nicky Robinson", email = "nickr@vimeo.com" },
+]
+requires-python = ">=3.11,<4"
+license = "MIT"
+keywords = [
+    "money",
+    "currency",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "babel>=2.4,<3",
+    "typing-extensions>=4.13.2,<5",
+]
+
+[project.urls]
+Repository = "https://github.com/backmarket-oss/money-iso"
+
+[dependency-groups]
+dev = [
+    "pip-licenses>=5.0,<6",
+    "mypy>=2.4.1,<3",
+    "pre-commit>=4.6.0,<5",
+    "pytest>=9.1.1,<10",
+    "coverage>=7.15,<8",
+    "pytest-cov>=7.1,<8",
+    "pydantic>=2.7.0,<3",
+]
+
+[tool.uv]
+default-groups = "all"
+exclude-newer = "7 days"
+
+[tool.uv.build-backend]
+module-name = ["money"]
+module-root = ""
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.mypy]
+python_version = "3.11"
+files= "money/*.py"
+ignore_missing_imports = true
+check_untyped_defs = true
+allow_incomplete_defs = false
+warn_unused_configs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+plugins = "pydantic.mypy"
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-print
+    "T20",
+    # flake8-pytest-style
+    "PT",
+    # flake8-simplify
+    "SIM",
+    # flake8-tidy-imports
+    "TID",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pylint
+    "PLE",
+    "PLW",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+]
+ignore = [
+    # line too long (already checked by ruff format)
+    "E501",
+    # must have __init__.py (we're using namespace packages)
+    "INP001",
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-between-types = 1
+section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = []
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]

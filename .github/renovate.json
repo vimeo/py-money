@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":enablePreCommit",
+    "schedule:monthly",
+    "customManagers:dockerfileVersions",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)",
+    "helpers:pinGitHubActionDigests",
+    "group:allNonMajor"
+  ],
+  "rebaseWhen": "conflicted",
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "shellcheck-py/shellcheck-py"
+      ],
+      "minimumReleaseAge": "7 days",
+      "versioning": "loose"
+    },
+    {
+      "matchPackageNames": [
+        "astral-sh/ruff-pre-commit"
+      ],
+      "minimumReleaseAge": "7 days",
+      "changelogUrl": "https://github.com/astral-sh/ruff"
+    },
+    {
+      "matchPackageNames": [
+        "psf/black-pre-commit-mirror"
+      ],
+      "minimumReleaseAge": "7 days",
+      "changelogUrl": "https://github.com/psf/black"
+    },
+    {
+      "matchPackageNames": [
+        "astral-sh/setup-uv",
+        "astral-sh/uv-pre-commit",
+        "ghcr.io/astral-sh/uv",
+        "uv"
+      ],
+      "minimumReleaseAge": "7 days",
+      "groupName": "uv-version"
+    }
+  ],
+  "ignoreDeps": [
+    "python",
+    "requests"
+  ]
+}

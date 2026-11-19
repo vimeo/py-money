@@ -1,36 +1,43 @@
 """Class representing a monetary amount"""
 
+from dataclasses import dataclass
+from decimal import ROUND_HALF_EVEN
+from decimal import Decimal
+from typing import ClassVar
+from typing import Literal
+from typing import Self
 from typing import Union
-from decimal import Decimal, ROUND_HALF_UP
-from babel.numbers import format_currency
+from typing import overload
+
 from money.currency import Currency
 from money.currency import CurrencyHelper
-from money.exceptions import InvalidAmountError, CurrencyMismatchError, InvalidOperandError
+from money.exceptions import CurrencyMismatchError
+from money.exceptions import InvalidAmountError
+from money.exceptions import InvalidOperandError
 
+from babel.numbers import format_currency
+
+
+@dataclass(frozen=True)
 class Money:
     """Class representing a monetary amount"""
 
-    def __init__(self, amount: str, currency: Currency=Currency.USD) -> None:
-        self._amount = Decimal(amount)
-        self._currency = currency
+    amount: Decimal
+    currency: Currency
 
-        if self._round(self._amount, currency) != Decimal(amount):
-            raise InvalidAmountError
+    rounding_mode: ClassVar[str] = ROUND_HALF_EVEN
 
-    @property
-    def amount(self) -> Decimal:
-        """Returns the numeric amount"""
+    def __init__(self, amount: str | Decimal, currency: Currency = Currency.USD) -> None:
+        self.__dict__["amount"] = Decimal(amount)
+        self.__dict__["currency"] = currency
+        self.__post_init__()
 
-        return self._amount
-
-    @property
-    def currency(self) -> Currency:
-        """Returns the currency"""
-
-        return self._currency
+    def __post_init__(self):
+        if self._round(self.amount, self.currency) != Decimal(self.amount):
+            raise InvalidAmountError(f"'{self.amount}' has too many decimal places for {self.currency}")
 
     @classmethod
-    def from_sub_units(cls, sub_units: int, currency: Currency=Currency.USD):
+    def from_sub_units(cls, sub_units: int, currency: Currency = Currency.USD) -> Self:
         """Creates a Money instance from sub-units."""
         sub_units_per_unit = CurrencyHelper.sub_unit_for_currency(currency)
         return cls(Decimal(sub_units) / Decimal(sub_units_per_unit), currency)
@@ -41,150 +48,176 @@ class Money:
         sub_units_per_unit = CurrencyHelper.sub_unit_for_currency(self.currency)
         return int(self.amount * sub_units_per_unit)
 
-    def __hash__(self) -> str:
-        return hash((self._amount, self._currency))
+    def __hash__(self) -> int:
+        return hash((self.amount, self.currency))
 
     def __repr__(self) -> str:
-        return "{} {}".format(self._currency.name, self._amount)
+        return "{} {}".format(self.currency.name, self.amount)  # noqa: UP032
 
-    def __lt__(self, other: 'Money') -> bool:
+    def __lt__(self, other: Union["Money", Literal[0]]) -> bool:
+        if isinstance(other, int) and other == 0:
+            return self.amount < 0
+
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.amount < other.amount
 
-    def __le__(self, other: 'Money') -> bool:
+    def __le__(self, other: Union["Money", Literal[0]]) -> bool:
+        if isinstance(other, int) and other == 0:
+            return self.amount <= 0
+
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.amount <= other.amount
 
-    def __gt__(self, other: 'Money') -> bool:
+    def __gt__(self, other: Union["Money", Literal[0]]) -> bool:
+        if isinstance(other, int) and other == 0:
+            return self.amount > 0
+
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.amount > other.amount
 
-    def __ge__(self, other: 'Money') -> bool:
+    def __ge__(self, other: Union["Money", Literal[0]]) -> bool:
+        if isinstance(other, int) and other == 0:
+            return self.amount >= 0
+
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.amount >= other.amount
 
-    def __eq__(self, other: 'Money') -> bool:
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, int) and other == 0:
+            return self.amount == 0
+
         if not isinstance(other, Money):
-            raise InvalidOperandError
+            return NotImplemented
 
         self._assert_same_currency(other)
         return self.amount == other.amount
 
-    def __ne__(self, other: 'Money') -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
     def __bool__(self):
-        return bool(self._amount)
+        return bool(self.amount)
 
-    def __add__(self, other: 'Money') -> 'Money':
+    def __add__(self, other: "Money") -> "Money":
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.__class__(str(self.amount + other.amount), self.currency)
 
-    def __radd__(self, other: 'Money') -> 'Money':
+    def __radd__(self, other: "Money") -> "Money":
         return self.__add__(other)
 
-    def __sub__(self, other: 'Money') -> 'Money':
+    def __sub__(self, other: "Money") -> "Money":
         if not isinstance(other, Money):
             raise InvalidOperandError
 
         self._assert_same_currency(other)
         return self.__class__(str(self.amount - other.amount), self.currency)
 
-    def __rsub__(self, other: 'Money') -> 'Money':
+    def __rsub__(self, other: "Money") -> "Money":
         return self.__sub__(other)
 
-    def __mul__(self, other: float) -> 'Money':
-        if isinstance(other, Money):
+    def __mul__(self, other: Decimal | int) -> "Money":
+        if not isinstance(other, (Decimal, int)):
             raise InvalidOperandError
 
-        amount = self._round(self._amount * Decimal(other), self._currency)
-        return self.__class__(str(amount), self._currency)
+        amount = self._round(self.amount * other, self.currency)
+        return self.__class__(str(amount), self.currency)
 
-    def __rmul__(self, other: float) -> 'Money':
+    def __rmul__(self, other: Decimal | int) -> "Money":
         return self.__mul__(other)
 
-    def __div__(self, other: float) -> 'Money':
+    def __div__(self, other: Decimal | int) -> "Money":
         return self.__truediv__(other)
 
-    def __truediv__(self, other: Union['Money', float]) -> Union['Money', float]:
+    @overload
+    def __truediv__(self, other: "Money") -> Decimal: ...
+
+    @overload
+    def __truediv__(self, other: Decimal | int) -> "Money": ...
+
+    def __truediv__(self, other: Union["Money", Decimal, int]) -> Union["Money", Decimal]:
         if isinstance(other, Money):
             self._assert_same_currency(other)
-            if other.amount == Decimal('0'):
+            if other.amount == Decimal("0"):
                 raise ZeroDivisionError
-            return float(self.amount / other.amount)
+            return Decimal(self.amount / other.amount)
 
-        else:
+        elif isinstance(other, (Decimal, int)):
             if other == 0:
                 raise ZeroDivisionError
-            amount = self._round(self._amount / Decimal(other), self._currency)
-            return self.__class__(str(amount), self._currency)
+            amount = self._round(self.amount / Decimal(other), self.currency)
+            return self.__class__(str(amount), self.currency)
 
-    def __floordiv__(self, other: Union['Money', float]) -> Union['Money', float]:
+        raise InvalidOperandError
+
+    @overload
+    def __floordiv__(self, other: "Money") -> Decimal: ...
+
+    @overload
+    def __floordiv__(self, other: Decimal | int) -> "Money": ...
+
+    def __floordiv__(self, other: Union["Money", Decimal, int]) -> Union["Money", Decimal]:
         if isinstance(other, Money):
             self._assert_same_currency(other)
-            if other.amount == Decimal('0'):
+            if other.amount == Decimal("0"):
                 raise ZeroDivisionError
-            return float(self.amount // other.amount)
+            return Decimal(self.amount // other.amount)
 
-        else:
+        elif isinstance(other, (Decimal, int)):
             if other == 0:
                 raise ZeroDivisionError
-            amount = self._round(self._amount // Decimal(other), self._currency)
-            return self.__class__(str(amount), self._currency)
+            amount = self._round(self.amount // Decimal(other), self.currency)
+            return self.__class__(str(amount), self.currency)
 
-    def __mod__(self, other: Union['Money', float]) -> Union['Money', float]:
+        raise InvalidOperandError
+
+    def __mod__(self, other: Union["Money", Decimal, int]) -> Union["Money", Decimal]:
         if isinstance(other, Money):
             self._assert_same_currency(other)
-            if other.amount == Decimal('0'):
+            if other.amount == Decimal("0"):
                 raise ZeroDivisionError
-            return float(self.amount % other.amount)
+            return Decimal(self.amount % other.amount)
 
-        else:
+        elif isinstance(other, (Decimal, int)):
             if other == 0:
                 raise ZeroDivisionError
-            amount = self._round(self._amount % Decimal(other), self._currency)
-            return self.__class__(str(amount), self._currency)
+            amount = self._round(self.amount % other, self.currency)
+            return self.__class__(str(amount), self.currency)
 
-    def __neg__(self) -> 'Money':
-        return self.__class__(str(-self._amount), self._currency)
+        raise InvalidOperandError
 
-    def __pos__(self) -> 'Money':
-        return self.__class__(str(+self._amount), self._currency)
+    def __neg__(self) -> "Money":
+        return self.__class__(str(-self.amount), self.currency)
 
-    def __abs__(self) -> 'Money':
-        return self.__class__(str(abs(self._amount)), self._currency)
+    def __pos__(self) -> "Money":
+        return self.__class__(str(+self.amount), self.currency)
 
-    def format(self, locale: str='en_US') -> str:
+    def __abs__(self) -> "Money":
+        return self.__class__(str(abs(self.amount)), self.currency)
+
+    def format(self, locale: str = "en_US") -> str:
         """Returns a string of the currency formatted for the specified locale"""
 
         return format_currency(self.amount, self.currency.name, locale=locale)
 
-    def _assert_same_currency(self, other: 'Money') -> None:
+    def _assert_same_currency(self, other: "Money") -> None:
         if self.currency != other.currency:
-            raise CurrencyMismatchError
+            raise CurrencyMismatchError(f"'self' currency is {self.currency} but 'other' currency is {other.currency}")
 
-    @staticmethod
-    def _round(amount: Decimal, currency: Currency) -> Decimal:
-        sub_units = CurrencyHelper.sub_unit_for_currency(currency)
-        # rstrip is necessary because quantize treats 1. differently from 1.0
-        rounded_to_subunits = amount.quantize(Decimal(str(1 / sub_units).rstrip('0')),\
-                                              rounding=ROUND_HALF_UP)
-        decimal_precision = CurrencyHelper.decimal_precision_for_currency(currency)
-        return rounded_to_subunits.quantize(\
-                   Decimal(str(1 / (10 ** decimal_precision)).rstrip('0')),\
-                   rounding=ROUND_HALF_UP)
+    @classmethod
+    def _round(cls, amount: Decimal, currency: Currency) -> Decimal:
+        return CurrencyHelper.round_amount(currency, amount, cls.rounding_mode)
